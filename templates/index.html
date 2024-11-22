@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Placement Prediction</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #fff;
+            color: #333;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #2575fc;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        input {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        input:focus {
+            border-color: #2575fc;
+            outline: none;
+            box-shadow: 0 0 5px rgba(37, 117, 252, 0.5);
+        }
+        button {
+            padding: 12px;
+            background: linear-gradient(135deg, #2575fc, #6a11cb);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition:background 0.3s;
+        }
+        button:hover {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+        }
+        #result1, #result2 {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+        }
+        #result1 {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        #result2 {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            input, button {
+                font-size: 14px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- <h1>Placement Prediction</h1> -->
+    <form id="predictionForm">
+        <input type="text" name="cgpa" placeholder="Enter your CGPA" required>
+        <input type="text" name="iq" placeholder="Enter your IQ " required>
+        <!-- Add more inputs if needed -->
+        <button type="submit">Predict</button>
+        <p id="result1">Prediction: your placement can do succesfully</p>
+        <p id="result2">Prediction: your placement cannot do</p>
+    </form>
+   
+    
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            // Collect input data
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+
+            // Send data to the backend
+            const response = await fetch('http://127.0.0.1:5000/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+
+            const result = await response.json();
+            if(result.prediction[0]==1){
+                document.getElementById('result1').style.display="block";
+                document.getElementById('result2').style.display="none";
+            }
+            else{
+                document.getElementById('result1').style.display="none";
+                document.getElementById('result2').style.display="block";
+            }
+           console.log(result) // document.getElementById('result').innerText = `Prediction: ${result.prediction}`;
+        });
+    </script>
+</body>
+</html>
